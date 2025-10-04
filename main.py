@@ -1,38 +1,12 @@
 from fastapi import FastAPI
 
+myapp = FastAPI()
 
-
-
-
-
-app = FastAPI()
-
-
-
-
-
-
-
-
-@app.get('/')
-
-
+@myapp.get('/')
 def index():
-
-
     return {'data': {'name': 'Sarthak'}}
 
 
-
-
-
-
-
-
-@app.get('/about')
-
-
+@myapp.get('/about')
 def about():
-
-
     return {'data': 'about page'}
