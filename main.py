@@ -1,10 +1,8 @@
 from fastapi import FastAPI
 
-app  FastAPI
+app = FastAPI()
 
 
 
-dex index():
+def index():
     return 'hey'
-
-
