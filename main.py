@@ -7,4 +7,4 @@ app = FastAPI()
 
 
 def index():
-    return 'hey'
+    return {'data': {'name':'Sarthak'}}
