@@ -3,10 +3,10 @@ from fastapi import FastAPI
 app = FastAPI()
 
 @app.get('/')
-def abs():
-    return {'data': {'name': 'Sarthak'}}
+def index():
+    return {'data':'blog list'}
 
 
 @app.get('/about')
-def xyzS():
+def abc():
     return {'data': 'about page'}
