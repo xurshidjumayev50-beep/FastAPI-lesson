@@ -1,7 +1,7 @@
 
 from fastapi import FastAPI
-from typing import Optional   # <-- MUHIM: shu joyda import qilinadi
-
+from typing import Optional   
+from pydantic import BaseModel
 app = FastAPI()
 
 @app.get('/')
@@ -19,3 +19,13 @@ def get_blogs(limit: int = 10, published: bool = True, sort: Optional[str] = Non
 @app.get('/blog/unpublished')
 def unpublished():
     return {'data': 'all unpublished blogs'}
+class Blog(BaseModel):
+    title:str
+    body:str
+    published: Optional[bool]
+
+
+@app.post('/blog')
+def create_blog(request:Blog):
+    return request
+    return {'data':"Blog is create "}
