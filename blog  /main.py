@@ -1,12 +1,39 @@
-from fastapi  import FastAPI
+from fastapi import FastAPI
+
+
 
 from pydantic import BaseModel
 
+
+from . import schemas
+
 app = FastAPI()
-class Blog(Model):
-    title:str
-    body:str
+
+
+
+
+
+
+class Blog(BaseModel):
+
+
+    title: str
+
+
+    body: str
+
+
+
+
+
+
 
 @app.post('/blog')
-def create(requset Blog):
-    return requset
+
+
+def create(request: Blog):
+
+
+def create(request: schemas.Blog):
+
+    return request
