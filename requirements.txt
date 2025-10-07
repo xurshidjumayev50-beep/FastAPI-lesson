@@ -1,2 +1,16 @@
 fastapi
+
+
 uvicorn
+
+
+sqlalchemy
+
+
+sqlalchemy
+
+
+passlib
+
+
+bcrypt
