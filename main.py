@@ -2,6 +2,7 @@
 from fastapi import FastAPI
 from typing import Optional   
 from pydantic import BaseModel
+import uvicorn
 app = FastAPI()
 
 @app.get('/')
@@ -29,3 +30,6 @@ class Blog(BaseModel):
 def create_blog(request:Blog):
     return request
     return {'data':f"Blog is create with title as{blog.title}"}
+
+if __name__=="__main__":
+    uvicorn.run(app,host ="127.0.1",port=9000)
