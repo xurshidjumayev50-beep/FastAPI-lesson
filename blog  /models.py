@@ -11,10 +11,21 @@ from .database import Base
 
 
 
-class Blog(Base):
+id = Column(Integer, primary_key=True, index=True)
 
 
-    __tablename__ = 'blogs'
+    title = Column(String)
+
+    body = Column(String)
+
+
+
+
+
+class User(Base):
+
+
+    __tablename__ = 'users'
 
 
 
@@ -23,7 +34,10 @@ class Blog(Base):
     id = Column(Integer, primary_key=True, index=True)
 
 
-    title = Column(String)
+    name = Column(String)
 
 
-    body = Column(String)
+    email = Column(String)
+
+
+    password = Column(String)
