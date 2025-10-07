@@ -42,3 +42,32 @@ def show(id, response: Response, db: Session = Depends(get_db)):
     blog = db.query(models.Blog).filter(models.Blog.id == id).first()
 
     if not blog:
+        return blog
+
+
+
+
+
+
+
+
+
+@app.post('/user')
+
+
+def create_user(request: schemas.User,db: Session = Depends(get_db)):
+
+
+    new_user = models.User(name=request.name,email=request.email,password=request.password)
+
+
+    db.add(new_user)
+
+
+    db.commit()
+
+
+    db.refresh(new_user)
+
+
+    return new_user
