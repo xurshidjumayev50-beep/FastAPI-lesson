@@ -8,103 +8,28 @@ from .. import models, schemas
 from fastapi import HTTPException,status
 
 
-
-
-
-def get_all(db: Session):
-
-
-    blogs = db.query(models.Blog).all()
-
-
-    return blogs
+from ..hashing import Hash
 
 
 
 
 
-def create(request: schemas.Blog,db: Session):
+def create(request: schemas.User,db:Session):
 
 
-    new_blog = models.Blog(title=request.title, body=request.body,user_id=1)
+    new_user = models.User(name=request.name,email=request.email,password=Hash.bcrypt(request.password))
 
 
-    db.add(new_blog)
+    db.add(new_user)
 
 
     db.commit()
 
 
-    db.refresh(new_blog)
+    db.refresh(new_user)
 
 
-    return new_blog
-
-
-
-
-
-def destroy(id:int,db: Session):
-
-
-    blog = db.query(models.Blog).filter(models.Blog.id == id)
-
-
-
-
-
-    if not blog.first():
-
-
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
-
-
-                            detail=f"Blog with id {id} not found")
-
-
-
-
-
-    blog.delete(synchronize_session=False)
-
-
-    db.commit()
-
-
-    return 'done'
-
-
-
-
-
-def update(id:int,request:schemas.Blog, db:Session):
-
-
-    blog = db.query(models.Blog).filter(models.Blog.id == id)
-
-
-
-
-
-    if not blog.first():
-
-
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
-
-
-                            detail=f"Blog with id {id} not found")
-
-
-
-
-
-    blog.update(request)
-
-
-    db.commit()
-
-
-    return 'updated'
+    return new_user
 
 
 
@@ -113,16 +38,16 @@ def update(id:int,request:schemas.Blog, db:Session):
 def show(id:int,db:Session):
 
 
-    blog = db.query(models.Blog).filter(models.Blog.id == id).first()
+    user = db.query(models.User).filter(models.User.id == id).first()
 
 
-    if not blog:
+    if not user:
 
 
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
 
 
-                            detail=f"Blog with the id {id} is not available")
+                            detail=f"User with the id {id} is not available")
 
 
-    return blog
+    return user
