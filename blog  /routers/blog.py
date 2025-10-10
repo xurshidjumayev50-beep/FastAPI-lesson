@@ -1,62 +1,128 @@
-from fastapi import APIRouter,Depends,status,HTTPException
-
-
-from ..hashing import Hash
+from sqlalchemy.orm import Session
 
 
 
-
-router = APIRouter()
-
-
-router = APIRouter(
+from .. import models, schemas
 
 
-    prefix="/user",
-
-
-    tags=['Users']
-
-
-)
-
-
-
-
-get_db = database.get_db
+from fastapi import HTTPException,status
 
 
 
 
 
+def get_all(db: Session):
 
-@router.post('/user', response_model=schemas.ShowUser,tags=['users'])
+
+    blogs = db.query(models.Blog).all()
 
 
-@router.post('/', response_model=schemas.ShowUser)
+    return blogs
 
-def create_user(request: schemas.User,db: Session = Depends(get_db)):
 
-    new_user = models.User(name=request.name,email=request.email,password=Hash.bcrypt(request.password))
 
-    db.add(new_user)
+
+
+def create(request: schemas.Blog,db: Session):
+
+
+    new_blog = models.Blog(title=request.title, body=request.body,user_id=1)
+
+
+    db.add(new_blog)
+
 
     db.commit()
 
-    db.refresh(new_user)
 
-    return new_user
-
+    db.refresh(new_blog)
 
 
+    return new_blog
 
-@router.get('/user/{id}',response_model=schemas.ShowUser,tags=['users'])
 
 
-@router.get('/{id}',response_model=schemas.ShowUser)
 
-def get_user(id:int,db: Session = Depends(get_db)):
 
-    user = db.query(models.User).filter(models.User.id == id).first()
+def destroy(id:int,db: Session):
 
-    if not user:
+
+    blog = db.query(models.Blog).filter(models.Blog.id == id)
+
+
+
+
+
+    if not blog.first():
+
+
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+
+
+                            detail=f"Blog with id {id} not found")
+
+
+
+
+
+    blog.delete(synchronize_session=False)
+
+
+    db.commit()
+
+
+    return 'done'
+
+
+
+
+
+def update(id:int,request:schemas.Blog, db:Session):
+
+
+    blog = db.query(models.Blog).filter(models.Blog.id == id)
+
+
+
+
+
+    if not blog.first():
+
+
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+
+
+                            detail=f"Blog with id {id} not found")
+
+
+
+
+
+    blog.update(request)
+
+
+    db.commit()
+
+
+    return 'updated'
+
+
+
+
+
+def show(id:int,db:Session):
+
+
+    blog = db.query(models.Blog).filter(models.Blog.id == id).first()
+
+
+    if not blog:
+
+
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+
+
+                            detail=f"Blog with the id {id} is not available")
+
+
+    return blog
