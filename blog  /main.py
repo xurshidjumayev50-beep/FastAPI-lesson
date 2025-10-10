@@ -1,41 +1,57 @@
-from . import schemas, models
-
-
-from .database import engine, SessionLocal
-
-from sqlalchemy.orm import Session
-
-
-from .hashing import Hash
+from sqlalchemy import Column, Integer, String
 
 
 
-@app.post('/user')
+from sqlalchemy import Column, Integer, String, ForeignKey
+
+from .database import Base
 
 
-
-@app.post('/user', response_model=schemas.ShowUser)
-
-db.close()
+from sqlalchemy.orm import relationship
 
 
 
 
 
-@app.post('/blog', status_code=status.HTTP_201_CREATED, tags=['blogs'])
+class Blog(Base):
+
+@@ -8,6 +9,10 @@ class Blog(Base):
+
+    id = Column(Integer, primary_key=True, index=True)
+
+    title = Column(String)
+
+    body = Column(String)
 
 
-def create(request: schemas.Blog, db: Session = Depends(get_db)):
+    user_id = Column(Integer, ForeignKey('users.id'))
 
 
-    new_blog = models.Blog(title=request.title, body=request.body)
 
 
-    new_blog = models.Blog(title=request.title, body=request.body,user_id=1)
 
-    db.add(new_blog)
+    creator = relationship("User", back_populates="blogs")
 
-    db.commit()
 
-    db.refresh(new_blog)
+
+
+
+
+class User(Base):
+
+    __tablename__ = 'users'
+
+@@ -16,3 +21,5 @@ class User(Base):
+
+    name = Column(String)
+
+    email = Column(String)
+
+    password = Column(String)
+
+
+
+
+
+    blogs = relationship('Blog', back_populates="creator")
 
