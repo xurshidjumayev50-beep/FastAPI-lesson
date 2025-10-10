@@ -1,17 +1,29 @@
+from fastapi import APIRouter,Depends,status,HTTPException
+
+
+from .. import schemas, database, models
+
 from sqlalchemy.orm import Session
 
 
 
-from .. import models, schemas
 
 
-from fastapi import HTTPException,status
-
-
+from ..repository import blog
 
 
 
-def get_all(db: Session):
+router = APIRouter(
+
+    prefix="/blog",
+
+@@ -13,48 +13,23 @@
+
+
+
+@router.get('/', response_model=List[schemas.ShowBlog])
+
+def all(db: Session = Depends(get_db)):
 
 
     blogs = db.query(models.Blog).all()
@@ -20,10 +32,15 @@ def get_all(db: Session):
     return blogs
 
 
+    return blog.get_all(db)
 
 
 
-def create(request: schemas.Blog,db: Session):
+
+
+@router.post('/', status_code=status.HTTP_201_CREATED)
+
+def create(request: schemas.Blog, db: Session = Depends(get_db)):
 
 
     new_blog = models.Blog(title=request.title, body=request.body,user_id=1)
@@ -41,10 +58,14 @@ def create(request: schemas.Blog,db: Session):
     return new_blog
 
 
+    return blog.create(request, db)
 
 
 
-def destroy(id:int,db: Session):
+@router.delete('/{id}', status_code=status.HTTP_204_NO_CONTENT)
+
+
+def destroy(id, db: Session = Depends(get_db)):
 
 
     blog = db.query(models.Blog).filter(models.Blog.id == id)
@@ -74,10 +95,19 @@ def destroy(id:int,db: Session):
     return 'done'
 
 
+def destroy(id:int, db: Session = Depends(get_db)):
+
+
+    return blog.destroy(id,db)
 
 
 
-def update(id:int,request:schemas.Blog, db:Session):
+
+
+@router.put('/{id}', status_code=status.HTTP_202_ACCEPTED)
+
+
+def update(id, request: schemas.Blog, db: Session = Depends(get_db)):
 
 
     blog = db.query(models.Blog).filter(models.Blog.id == id)
@@ -107,10 +137,19 @@ def update(id:int,request:schemas.Blog, db:Session):
     return 'updated'
 
 
+def update(id:int, request: schemas.Blog, db: Session = Depends(get_db)):
+
+
+    return blog.update(id,request, db)
 
 
 
-def show(id:int,db:Session):
+
+
+@router.get('/{id}', status_code=200, response_model=schemas.ShowBlog)
+
+
+def show(id, db: Session = Depends(get_db)):
 
 
     blog = db.query(models.Blog).filter(models.Blog.id == id).first()
@@ -126,3 +165,9 @@ def show(id:int,db:Session):
 
 
     return blog
+
+
+def show(id:int, db: Session = Depends(get_db)):
+
+
+    return blog.show(id,db)
