@@ -7,3 +7,30 @@ engina=create_engine(SQLALCHAMY_DATAASE_URL,connect_arggs={"check_same_threread"
 SessionLocal =sessionmaker(bind=engina,autocommit=False,autoflush=False)
 
 Base=declarative_bas()
+SessionLocal = sessionmaker(bind=engine, autocommit=False, autoflush=False,)
+
+
+
+
+Base = declarative_base()
+
+
+
+
+
+def get_db():
+
+
+    db = SessionLocal()
+
+
+    try:
+
+
+        yield db
+
+
+    finally:
+
+
+        db.close()
